@@ -35,6 +35,7 @@ yarn-error.log*
 # do not commit any .env files to git, except for the .env.example file. https://create.t3.gg/en/usage/env-variables#using-environment-variables
 .env
 .env*.local
+.env.production
 
 # vercel
 .vercel
@@ -44,3 +45,16 @@ yarn-error.log*
 
 # idea files
 .idea
+
+# Ralph loop state files
+.ralph/logs/
+.ralph/status.json
+.ralph/progress.json
+.ralph/.call_count
+.ralph/.last_reset
+.ralph/.exit_signals
+.ralph/.response_analysis
+.ralph/.circuit_breaker_state
+.ralph/.claude_session_id
+.ralph/.ralph_session
+.ralph/.ralph_session_history
