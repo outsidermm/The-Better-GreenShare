@@ -3,29 +3,29 @@ Derived from: .ralph/specs/PRD.md
 
 ## Critical (Data Model & Infrastructure)
 
-- [ ] **Task 1.1**: Update Prisma schema - Add DELETED to ItemStatus enum, add images String[] to Item model, remove ItemImage table
-  - Verify: `prisma/schema.prisma` has ItemStatus.DELETED
-  - Verify: Item model has `images String[]` field
-  - Verify: ItemImage model removed, all relations cleaned up
+- [x] **Task 1.1**: Update Prisma schema - Add DELETED to ItemStatus enum, add images String[] to Item model, remove ItemImage table
+  - ✅ Verify: `prisma/schema.prisma` has ItemStatus.DELETED
+  - ✅ Verify: Item model has `images String[]` field
+  - ✅ Verify: ItemImage model removed, all relations cleaned up
 
-- [ ] **Task 1.2**: Update Prisma schema - Replace ExchangeOffer and OfferedItem with new Offer model
-  - Verify: New Offer model has: initiatorId, targetUserId (nullable), offeredItemIds String[], requestedItemIds String[], message, status, parentOfferId (nullable), cancellationReason
-  - Verify: OfferStatus enum updated to: PENDING, ACCEPTED, COMPLETED, CANCELLED
-  - Verify: ExchangeOffer and OfferedItem models removed
+- [x] **Task 1.2**: Update Prisma schema - Replace ExchangeOffer and OfferedItem with new Offer model
+  - ✅ Verify: New Offer model has: initiatorId, targetUserId (nullable), offeredItemIds String[], requestedItemIds String[], message, status, parentOfferId (nullable), cancellationReason
+  - ✅ Verify: OfferStatus enum updated to: PENDING, ACCEPTED, COMPLETED, CANCELLED
+  - ✅ Verify: ExchangeOffer and OfferedItem models removed
 
-- [ ] **Task 1.3**: Create Conversation and Message models in Prisma schema
-  - Verify: Conversation model with id, offerId (nullable), participantIds String[], lastMessageAt
-  - Verify: Message model with id, conversationId, senderId, content, sentAt
-  - Verify: Relations set up (User has conversations/messages, Conversation has messages)
+- [x] **Task 1.3**: Create Conversation and Message models in Prisma schema
+  - ✅ Verify: Conversation model with id, offerId (nullable), participantIds String[], lastMessageAt
+  - ✅ Verify: Message model with id, conversationId, senderId, content, sentAt
+  - ✅ Verify: Relations set up (User has conversations/messages, Conversation has messages)
 
-- [ ] **Task 1.4**: Create Interest model in Prisma schema
-  - Verify: Interest model with id, offerId, userId, createdAt
-  - Verify: Relations set up (User has interests, Offer has interests)
+- [x] **Task 1.4**: Create Interest model in Prisma schema
+  - ✅ Verify: Interest model with id, offerId, userId, createdAt
+  - ✅ Verify: Relations set up (User has interests, Offer has interests)
 
-- [ ] **Task 1.5**: Run database migration and generate Prisma client
-  - Verify: `pnpm db:generate` runs successfully
-  - Verify: New types available in generated Prisma client
-  - Verify: No TypeScript errors in `src/server/db.ts`
+- [x] **Task 1.5**: Run database migration and generate Prisma client
+  - ✅ Verify: `pnpm db:generate` runs successfully (migration: 20260208135456_enhanced_bartering_flow)
+  - ✅ Verify: New types available in generated Prisma client
+  - ✅ Verify: No TypeScript errors (pnpm typecheck passes)
 
 ## High (Core API - Offers)
 
