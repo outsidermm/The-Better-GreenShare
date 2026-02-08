@@ -109,9 +109,9 @@ The original implementation uses a Python Flask backend with in-memory data stru
 
 #### 1.1 Design the Prisma Schema
 
-- [ ] Remove the sample `Post` model from `prisma/schema.prisma`
-- [ ] Extend NextAuth `User` model with `firstName` and `lastName` fields
-- [ ] Add `Item` model with fields:
+- [x] Remove the sample `Post` model from `prisma/schema.prisma`
+- [x] Extend NextAuth `User` model with `firstName` and `lastName` fields
+- [x] Add `Item` model with fields:
   ```prisma
   model Item {
     id          String   @id @default(cuid())
@@ -165,7 +165,7 @@ The original implementation uses a Python Flask backend with in-memory data stru
     EXCHANGE
   }
   ```
-- [ ] Add `ItemImage` model:
+- [x] Add `ItemImage` model:
   ```prisma
   model ItemImage {
     id      String @id @default(cuid())
@@ -177,7 +177,7 @@ The original implementation uses a Python Flask backend with in-memory data stru
     @@index([itemId])
   }
   ```
-- [ ] Add `ExchangeOffer` model:
+- [x] Add `ExchangeOffer` model:
   ```prisma
   model ExchangeOffer {
     id                String       @id @default(cuid())
@@ -206,7 +206,7 @@ The original implementation uses a Python Flask backend with in-memory data stru
     CANCELLED
   }
   ```
-- [ ] Add `OfferedItem` join model:
+- [x] Add `OfferedItem` join model:
   ```prisma
   model OfferedItem {
     id      String        @id @default(cuid())
@@ -219,15 +219,8 @@ The original implementation uses a Python Flask backend with in-memory data stru
     @@index([itemId])
   }
   ```
-- [ ] Run `pnpm db:push` to apply schema to development database
-- [ ] Verify schema with `pnpm db:studio`
-
-#### 1.2 Seed Data Script
-
-- [ ] Create `prisma/seed.ts` with realistic test data
-- [ ] Add seed script to `package.json`: `"db:seed": "tsx prisma/seed.ts"`
-- [ ] Include test users, items across all categories, and sample offers in various states
-- [ ] Add `tsx` as dev dependency: `pnpm add -D tsx`
+- [x] Run `pnpm db:push` to apply schema to development database
+- [x] Verify schema with `pnpm db:studio`
 
 ---
 
