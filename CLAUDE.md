@@ -12,7 +12,7 @@ This is "The Better GreenShare" - a Next.js application built with the T3 Stack,
 - **Language**: TypeScript (strict mode enabled)
 - **API**: tRPC 11+ for end-to-end type-safe APIs
 - **Database**: PostgreSQL with Prisma 7 ORM
-- **Auth**: NextAuth.js 5.0 (beta) with Discord provider
+- **Auth**: NextAuth.js 5.0 (beta) with Discord provider (to be replaced with Google Oauth)
 - **Styling**: Tailwind CSS 4.1+
 - **State Management**: TanStack Query (React Query) 5+
 - **Package Manager**: pnpm
