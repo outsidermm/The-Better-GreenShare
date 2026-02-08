@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is "The Better GreenShare" - a Next.js application built with the T3 Stack, featuring tRPC, Prisma, NextAuth.js, and Tailwind CSS.
+**GreenShare** is a freebies platform for giving away free items and building sustainable communities. Users list items they no longer need, others claim them, and coordinate pickup through chat.
+
+**Key Philosophy:** No exchanges, no bartering—just free stuff and generosity.
 
 ## Technology Stack
 
@@ -12,7 +14,7 @@ This is "The Better GreenShare" - a Next.js application built with the T3 Stack,
 - **Language**: TypeScript (strict mode enabled)
 - **API**: tRPC 11+ for end-to-end type-safe APIs
 - **Database**: PostgreSQL with Prisma 7 ORM
-- **Auth**: NextAuth.js 5.0 (beta) with Discord provider (to be replaced with Google Oauth)
+- **Auth**: NextAuth.js 5.0 (beta) with Google OAuth
 - **Styling**: Tailwind CSS 4.1+
 - **State Management**: TanStack Query (React Query) 5+
 - **Package Manager**: pnpm
@@ -28,15 +30,15 @@ pnpm db:push                    # Push schema to database (development)
 
 ### Development
 ```bash
-pnpm dev                        # Start dev server with Turbopack (http://localhost:3000)
+pnpm dev                        # Start dev server (http://localhost:3000)
 pnpm db:studio                  # Open Prisma Studio for database GUI
 ```
 
 ### Database Operations
 ```bash
-pnpm db:generate                # Generate Prisma Client and run migrations (creates new migration)
+pnpm db:generate                # Generate Prisma Client and create migration
 pnpm db:migrate                 # Deploy migrations to production database
-pnpm db:push                    # Push schema changes without creating migrations (dev only)
+pnpm db:push                    # Push schema changes without migration (dev only)
 pnpm db:studio                  # Open Prisma Studio
 ```
 
@@ -89,7 +91,7 @@ pnpm preview                    # Build and start production server
 1. **Client-side (RSC)**: `src/trpc/server.ts` → Creates server caller with context
 2. **Client-side (Client Component)**: `src/trpc/react.tsx` → HTTP request to `/api/trpc`
 3. **API Route**: `src/app/api/trpc/[trpc]/route.ts` → Handles tRPC requests
-4. **Router**: `src/server/api/root.ts` → Routes to specific router (e.g., `postRouter`)
+4. **Router**: `src/server/api/root.ts` → Routes to specific router (e.g., `itemRouter`)
 5. **Procedure**: Individual query/mutation in `src/server/api/routers/*.ts`
 
 ### Database Access
@@ -102,7 +104,7 @@ pnpm preview                    # Build and start production server
 ### Authentication
 
 - NextAuth.js config in `src/server/auth/config.ts`
-- Discord OAuth provider configured (requires `AUTH_DISCORD_ID` and `AUTH_DISCORD_SECRET`)
+- Google OAuth provider configured (requires `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET`)
 - Session accessible in tRPC context via `ctx.session`
 - Use `protectedProcedure` for authenticated endpoints (enforces non-null user)
 - Use `publicProcedure` for unauthenticated endpoints (session may be null)
@@ -135,7 +137,7 @@ All environment variables must be:
 
 - Custom output path: `generated/prisma` (not default `node_modules/.prisma/client`)
 - Models use NextAuth.js adapter schema (Account, Session, User, VerificationToken)
-- PostgreSQL-specific features available
+- PostgreSQL-specific features available (arrays, etc.)
 - After schema changes: run `pnpm db:push` (dev) or `pnpm db:generate` (migration)
 
 ### Adding New tRPC Routers
@@ -152,12 +154,82 @@ All environment variables must be:
 - Always commit migration files in `prisma/migrations/`
 - Prisma Client regenerates automatically on `pnpm install` (postinstall hook)
 
+## Database Schema (Phase 1)
+
+### Enums
+
+```prisma
+enum ItemCondition {
+  NEW
+  LIKE_NEW
+  USED_GOOD
+  USED_FAIR
+  POOR
+}
+
+enum ItemStatus {
+  AVAILABLE    // Item is available for claiming
+  CLAIMED      // Item has been claimed
+  DELETED      // Item was deleted by owner
+}
+
+enum ItemCategory {
+  ESSENTIALS          // Food, toiletries, basic necessities
+  LIVING              // Furniture, home goods, appliances
+  TOOLS_TECH          // Tools, gadgets, electronics
+  STYLE_EXPRESSION    // Clothing, accessories, art
+  LEISURE_LEARNING    // Books, games, sports equipment
+}
+```
+
+### Models
+
+**Item** - Free items listed by users
+- All items are FREE (no "exchange" type)
+- Users list items, others claim them
+- Status tracks: AVAILABLE → CLAIMED or DELETED
+
+**User** - User accounts via NextAuth
+- Extended with `firstName` and `lastName`
+- Relation to items they've listed
+
+## Phase 1 Scope
+
+### Completed
+✅ Database schema with Item and User models
+✅ Prisma setup with custom output path
+✅ NextAuth.js with Google OAuth (replacing Discord)
+✅ Type-safe environment variable validation
+✅ tRPC foundation with example router
+
+### Next Steps (Phase 2)
+- [ ] Real-time chat system (Conversation + Message models)
+- [ ] User-to-user messaging
+- [ ] Pickup coordination
+- [ ] Notifications
+
+## Commit Conventions
+
+Use conventional commits with these prefixes:
+- `features:` - New features or capabilities
+- `fix:` - Bug fixes
+- `refactor:` - Code restructuring without behavior change
+- `chores:` - Maintenance tasks (deps, config, etc.)
+
+**Examples:**
+```
+features: add item listing API endpoint
+fix: resolve authentication redirect loop
+refactor: simplify item card component
+chores: update Next.js to 15.5.1
+```
+
 ## Environment Setup
 
 Required environment variables (see `.env.example`):
 - `DATABASE_URL`: PostgreSQL connection string
 - `AUTH_SECRET`: NextAuth.js secret (generate with `npx auth secret`)
-- `AUTH_DISCORD_ID`: Discord OAuth application ID
-- `AUTH_DISCORD_SECRET`: Discord OAuth application secret
+- `AUTH_GOOGLE_ID`: Google OAuth application ID
+- `AUTH_GOOGLE_SECRET`: Google OAuth application secret
 
 Use `./start-database.sh` to spin up a local PostgreSQL Docker/Podman container automatically configured from your `DATABASE_URL`.

@@ -25,7 +25,7 @@ enum ItemCondition {
 
 enum ItemStatus {
   AVAILABLE
-  EXCHANGED
+  CLAIMED
   DELETED
 }
 
