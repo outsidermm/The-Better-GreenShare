@@ -37,18 +37,6 @@ enum ItemCategory {
   LEISURE_LEARNING
 }
 
-enum ItemType {
-  FREE
-  EXCHANGE
-}
-
-enum OfferStatus {
-  PENDING
-  ACCEPTED
-  COMPLETED
-  CANCELLED
-}
-
 // Core Models
 model Item {
   id          String        @id @default(cuid())
@@ -60,84 +48,14 @@ model Item {
   status      ItemStatus    @default(AVAILABLE)
   location    String        @db.VarChar(500)
   category    ItemCategory
-  type        ItemType
-  images      String[]      // Array of image URLs (replaces ItemImage table)
+  images      String[]      // Array of image URLs
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
   @@index([userId])
   @@index([category])
   @@index([condition])
-  @@index([type])
   @@index([status])
-}
-
-model Offer {
-  id                 String      @id @default(cuid())
-  initiatorId        String      // User who creates the offer
-  initiator          User        @relation("OffersInitiated", fields: [initiatorId], references: [id], onDelete: Cascade)
-  targetUserId       String?     // User receiving the offer (null for broadcast offers)
-  target             User?       @relation("OffersReceived", fields: [targetUserId], references: [id], onDelete: Cascade)
-  offeredItemIds     String[]    // Items the initiator is offering
-  requestedItemIds   String[]    // Items the initiator wants (can be empty for open requests)
-  message            String      @db.Text
-  status             OfferStatus @default(PENDING)
-  parentOfferId      String?     // Link to parent offer (for counter-offers)
-  parentOffer        Offer?      @relation("OfferCounters", fields: [parentOfferId], references: [id], onDelete: SetNull)
-  counterOffers      Offer[]     @relation("OfferCounters")
-  cancellationReason String?     @db.Text
-  createdAt          DateTime    @default(now())
-  updatedAt          DateTime    @updatedAt
-
-  // Relations
-  conversation Conversation?
-  interests    Interest[]
-
-  @@index([initiatorId])
-  @@index([targetUserId])
-  @@index([status])
-  @@index([parentOfferId])
-}
-
-model Conversation {
-  id             String    @id @default(cuid())
-  offerId        String?   @unique // Optional - for offer-specific chats
-  offer          Offer?    @relation(fields: [offerId], references: [id], onDelete: Cascade)
-  participantIds String[]  // Array of user IDs in the conversation
-  lastMessageAt  DateTime  @default(now())
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-
-  messages Message[]
-
-  @@index([offerId])
-}
-
-model Message {
-  id             String       @id @default(cuid())
-  conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  senderId       String
-  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
-  content        String       @db.Text
-  sentAt         DateTime     @default(now())
-
-  @@index([conversationId])
-  @@index([senderId])
-  @@index([sentAt])
-}
-
-model Interest {
-  id        String   @id @default(cuid())
-  offerId   String   // Must be a broadcast offer (targetUserId IS NULL)
-  offer     Offer    @relation(fields: [offerId], references: [id], onDelete: Cascade)
-  userId    String   // User who is interested
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-
-  @@unique([offerId, userId]) // One interest per user per offer
-  @@index([offerId])
-  @@index([userId])
 }
 
 // ============================================================================
@@ -187,10 +105,6 @@ model User {
 
   // GreenShare relations
   items            Item[]
-  offersInitiated  Offer[]   @relation("OffersInitiated")
-  offersReceived   Offer[]   @relation("OffersReceived")
-  messages         Message[]
-  interests        Interest[]
 }
 
 model VerificationToken {
